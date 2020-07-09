@@ -1,0 +1,55 @@
+{
+  "categories": [
+    {
+      "name": "Fruits",
+      "id": 1,
+      "img_url": "",
+      "visibility": 0,
+      "product_type_list": [
+        {
+          "name": "Apple",
+          "id": 1,
+          "category_id": 1,
+          "img_url": "/assets/images/apple_green.jpg",
+          "visibility": 0,
+          "min_price": 4.1,
+          "product_list": []
+        }
+      ]
+    },
+    {
+      "name": "Vegetables",
+      "id": 2,
+      "img_url": "",
+      "visibility": 0,
+      "product_type_list": [
+        {
+          "name": "Spinach",
+          "id": 2,
+          "category_id": 2,
+          "img_url": "/assets/images/spinach.jpg",
+          "visibility": 0,
+          "min_price": 4.1,
+          "product_list": []
+        }
+      ]
+    },
+    {
+      "name": "Packages",
+      "id": 3,
+      "img_url": "",
+      "visibility": 0,
+      "product_type_list": [
+        {
+          "name": "Specials",
+          "id": 3,
+          "category_id": 3,
+          "img_url": "/assets/images/spinach.jpg",
+          "visibility": 0,
+          "min_price": 4.1,
+          "product_list": []
+        }
+      ]
+    }
+  ]
+}
