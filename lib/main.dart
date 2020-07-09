@@ -20,14 +20,17 @@ class UniRaisAdminApp extends StatelessWidget {
         BlocProvider<BlocCategories>(
           create: (BuildContext context) => BlocCategories(),
         ),
+        BlocProvider<BlocProductTypes>(
+          create: (BuildContext context) => BlocProductTypes(),
+        ),
+        BlocProvider<BlocProducts>(
+          create: (BuildContext context) => BlocProducts(),
+        ),
         BlocProvider<BlocCart>(
           create: (BuildContext context) => BlocCart(),
         ),
         BlocProvider<BlocAuthentication>(
           create: (BuildContext context) => BlocAuthentication(),
-        ),
-        BlocProvider<BlocProducts>(
-          create: (BuildContext context) => BlocProducts(),
         ),
         BlocProvider<BlocOrder>(
           create: (BuildContext context) => BlocOrder(),

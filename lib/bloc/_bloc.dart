@@ -9,3 +9,4 @@ export './products_bloc.dart';
 export './registration_bloc.dart';
 export './states/_states.dart';
 export './university_bloc.dart';
+export './bloc_products_type.dart';

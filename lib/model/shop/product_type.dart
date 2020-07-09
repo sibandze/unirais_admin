@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
 import './../../const/_const.dart' as CONSTANTS;
 import './../../util/_util.dart';
@@ -14,9 +15,9 @@ class ProductType extends Equatable {
   final List<Product> productList;
 
   ProductType({
-    this.name,
+    @required this.name,
     this.id,
-    this.categoryId,
+    @required this.categoryId,
     this.imgUrl,
     num minPrice = 0,
     this.productList = const [],
@@ -34,6 +35,13 @@ class ProductType extends Equatable {
           .toList(),
     );
   }
+
+  Map<String, String> toMap() => {
+        CONSTANTS.ROW_NAME: name,
+        CONSTANTS.ROW_ID: id.toString(),
+        CONSTANTS.REF_CATEGORY_ID: categoryId.toString(),
+        CONSTANTS.ROW_IMG_URL: imgUrl,
+      };
 
   String get appUrlQualifiedImgUrl => CONSTANTS.API_URL + '/' + imgUrl;
 

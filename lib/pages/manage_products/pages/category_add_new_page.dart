@@ -1,6 +1,6 @@
-import 'package:UniRaisAdmin/bloc/_bloc.dart';
-import 'package:UniRaisAdmin/bloc/categories_bloc.dart';
-import 'package:UniRaisAdmin/model/_model.dart';
+import './../../../bloc/_bloc.dart';
+import './../../../bloc/categories_bloc.dart';
+import './../../../model/_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './../../../presentation/_presentation.dart' as PRESENTATION;
@@ -27,8 +27,8 @@ class _CategoryAddNewPageState extends State<CategoryAddNewPage> {
     if (
       _productNameController.text.trim().isNotEmpty
     ) {
-      ProductCategory _category
-        = ProductCategory(name: _productNameController.text);
+      ProductCategory _category =
+          ProductCategory(name: _productNameController.text.trim());
       _categoriesBloc.add(BlocEventCategoriesCreate(category: _category));
     }
   }
@@ -43,6 +43,7 @@ class _CategoryAddNewPageState extends State<CategoryAddNewPage> {
         bloc: _categoriesBloc,
         listener: (BuildContext context, BlocStateCategories state) {
           if(state is BlocStateCategoriesCUDSuccess){
+            _categoriesBloc.add(BlocEventCategoriesFetch());
             Navigator.of(context).pop();
           }
           else if(state is BlocStateCategoriesCUDFailure){
@@ -54,8 +55,11 @@ class _CategoryAddNewPageState extends State<CategoryAddNewPage> {
             Expanded(
               child: ListView(
                 children: <Widget>[
+                  SizedBox(
+                    height: 24,
+                  ),
                   Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0,),
                     child: TextFormField(
                       controller: _productNameController,
                       textInputAction: TextInputAction.next,
@@ -78,6 +82,9 @@ class _CategoryAddNewPageState extends State<CategoryAddNewPage> {
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 24,
                   ),
                 ],
               ),

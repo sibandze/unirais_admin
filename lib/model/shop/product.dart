@@ -7,22 +7,16 @@ import './../../util/_util.dart';
 class Product extends Equatable {
   final String name;
   final int id;
-
-  // ignore: non_constant_identifier_names
-  final int product_type_id;
-
-  // ignore: non_constant_identifier_names
-  final String img_url;
+  final int productTypeId;
+  final String imgUrl;
   final String packaging;
   final Money price;
 
   Product({
-    // ignore: non_constant_identifier_names
-    @required this.product_type_id,
+    @required this.productTypeId,
     @required this.name,
     @required this.id,
-    // ignore: non_constant_identifier_names
-    this.img_url,
+    this.imgUrl,
     @required this.packaging,
     @required num price,
   }) : this.price = Money(price);
@@ -30,15 +24,24 @@ class Product extends Equatable {
   factory Product.fromMap(map) => Product(
         name: map[CONSTANTS.ROW_NAME],
         id: map[CONSTANTS.ROW_ID],
-        img_url: map[CONSTANTS.ROW_IMG_URL],
+        imgUrl: map[CONSTANTS.ROW_IMG_URL],
         packaging: map[CONSTANTS.ROW_PACKAGING],
         price: map[CONSTANTS.ROW_PRICE],
-        product_type_id: map[CONSTANTS.REF_PRODUCT_TYPE_ID],
+        productTypeId: map[CONSTANTS.REF_PRODUCT_TYPE_ID],
       );
 
-  // ignore: non_constant_identifier_names
-  String get app_url_qualified_img_url => CONSTANTS.API_URL + '/' + img_url;
+  String get appUrlQualifiedImgUrl => CONSTANTS.API_URL + '/' + imgUrl;
 
   @override
   List<Object> get props => [id];
+
+  Map<String, String> toMap() =>
+      {
+        CONSTANTS.ROW_NAME: name,
+        CONSTANTS.ROW_ID: id.toString(),
+        CONSTANTS.ROW_IMG_URL: imgUrl,
+        CONSTANTS.ROW_PACKAGING: packaging,
+        CONSTANTS.ROW_PRICE: price.amount.toString(),
+        CONSTANTS.REF_PRODUCT_TYPE_ID: productTypeId.toString(),
+      };
 }

@@ -3,38 +3,44 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-abstract class BlocEventProductType extends Equatable {
+abstract class BlocEventProductTypes extends Equatable {
   final _props;
 
-  BlocEventProductType({props}): this._props=props;
+  BlocEventProductTypes({props}) : this._props = props;
 
   @override
   List<Object> get props => _props;
 }
 
-class BlocEventProductTypeFetch extends BlocEventProductType {
+class BlocEventProductTypesFetch extends BlocEventProductTypes {
   final ProductCategory category;
 
-  BlocEventProductTypeFetch({@required this.category}) : super(props: [category]);
+  BlocEventProductTypesFetch({@required this.category})
+      : super(props: [category]);
 
 }
 
-abstract class BlocEventProductTypeCUD extends BlocEventProductType{
-  BlocEventProductTypeCUD({props}): super(props:props);
+abstract class BlocEventProductTypesCUD extends BlocEventProductTypes {
+  BlocEventProductTypesCUD({props}) : super(props: props);
 }
 
-class BlocEventProductTypeCreate extends BlocEventProductTypeCUD{
+class BlocEventProductTypesCreate extends BlocEventProductTypesCUD {
   final ProductType productType;
 
-  BlocEventProductTypeCreate({@required this.productType}): super(props:[productType]);
+  BlocEventProductTypesCreate({@required this.productType})
+      : super(props: [productType]);
 }
-class BlocEventProductTypeUpdate extends BlocEventProductTypeCUD{
+
+class BlocEventProductTypesUpdate extends BlocEventProductTypesCUD {
   final ProductType productType;
 
-  BlocEventProductTypeUpdate({@required this.productType}): super(props:[productType]);
+  BlocEventProductTypesUpdate({@required this.productType})
+      : super(props: [productType]);
 }
-class BlocEventProductTypeDelete extends BlocEventProductTypeCUD{
+
+class BlocEventProductTypesDelete extends BlocEventProductTypesCUD {
   final ProductType productType;
 
-  BlocEventProductTypeDelete({@required this.productType}): super(props:[productType]);
+  BlocEventProductTypesDelete({@required this.productType})
+      : super(props: [productType]);
 }

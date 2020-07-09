@@ -10,35 +10,38 @@ import './../services/web_service/webservice.dart';
 class ProductRepository {
   static final ProductRepository productRepository = ProductRepository();
 
-  // ignore: non_constant_identifier_names
-  List<ProductCategory> _product_category_list;
+  /// Category
 
-  // ignore: non_constant_identifier_names
-  List<Product> _product_list;
-
-  String _location;
-
-  ProductRepository()
-      : _product_category_list = [],
-        _product_list = [];
+  Future<List<ProductCategory>> getCategories(
+          {String location = "all"}) async =>
+      await WebService().get(
+        Resource(
+          parse: (http.Response response) {
+            var _result = jsonDecode(response.body);
+            return (_result['categories'] as List)
+                .map((e) => ProductCategory.fromMap(e))
+                .toList();
+          },
+          url: CONSTANTS.API_URL + '/app/categories/?' + 'location=$location',
+        ),
+      );
 
   Future<bool> addCategory({@required ProductCategory productCategory}) async {
-    Map<String, dynamic> orderResult = await WebService().post(
+    Map<String, dynamic> result = await WebService().post(
       Resource(
         parse: (http.Response response) {
-          print(response.body);
           return jsonDecode(response.body);
         },
         params: productCategory.toMap(),
         url: CONSTANTS.API_URL + '/app/categories/index.php',
       ),
     );
-    return orderResult['success'];
+    return result['success'];
   }
 
   Future<bool> updateCategory(
       {@required ProductCategory productCategory}) async {
-    Map<String, dynamic> orderResult = await WebService().patch(
+    Map<String, dynamic> result = await WebService().patch(
       Resource(
         parse: (http.Response response) {
           return jsonDecode(response.body);
@@ -47,12 +50,12 @@ class ProductRepository {
         url: CONSTANTS.API_URL + '/app/categories/index.php',
       ),
     );
-    return orderResult['success'];
+    return result['success'];
   }
 
   Future<bool> deleteCategory(
       {@required ProductCategory productCategory}) async {
-    Map<String, dynamic> orderResult = await WebService().delete(
+    Map<String, dynamic> result = await WebService().delete(
       Resource(
         parse: (http.Response response) {
           return jsonDecode(response.body);
@@ -61,12 +64,71 @@ class ProductRepository {
             '/app/categories/index.php/?product_category_id=${productCategory.id}',
       ),
     );
-    return orderResult['success'];
+    return result['success'];
   }
 
-  Future<List<Product>> getProducts({@required ProductType productType}) async {
-    if (productType != null) {
-      _product_list = await WebService().get(
+
+  /// ProductType
+
+  Future<List<ProductType>> getProductTypes(
+      {@required ProductCategory category}) async =>
+      await WebService().get(
+        Resource(
+          parse: (http.Response response) {
+            var _result = jsonDecode(response.body);
+            return (_result['product_types'] as List)
+                .map((e) => ProductType.fromMap(e))
+                .toList();
+          },
+          url: CONSTANTS.API_URL +
+              '/app/product_type/?product_category_id=${category.id}',
+        ),
+      );
+
+  Future<bool> addProductType({@required ProductType productType}) async {
+    Map<String, dynamic> result = await WebService().post(
+      Resource(
+        parse: (http.Response response) {
+          return jsonDecode(response.body);
+        },
+        params: productType.toMap(),
+        url: CONSTANTS.API_URL + '/app/product_types/index.php',
+      ),
+    );
+    return result['success'];
+  }
+
+  Future<bool> updateProductType({@required ProductType productType}) async {
+    Map<String, dynamic> result = await WebService().patch(
+      Resource(
+        parse: (http.Response response) {
+          return jsonDecode(response.body);
+        },
+        params: productType.toMap(),
+        url: CONSTANTS.API_URL + '/app/product_types/index.php',
+      ),
+    );
+    return result['success'];
+  }
+
+  Future<bool> deleteProductType({@required ProductType productType}) async {
+    Map<String, dynamic> result = await WebService().delete(
+      Resource(
+        parse: (http.Response response) {
+          return jsonDecode(response.body);
+        },
+        url: CONSTANTS.API_URL +
+            '/app/product_types/index.php/?product_type_id=${productType.id}',
+      ),
+    );
+    return result['success'];
+  }
+
+  /// Product
+
+  Future<List<Product>> getProducts(
+      {@required ProductType productType}) async =>
+      await WebService().get(
         Resource(
           parse: (http.Response response) {
             var _result = jsonDecode(response.body);
@@ -74,31 +136,47 @@ class ProductRepository {
                 .map((e) => Product.fromMap(e))
                 .toList();
           },
-          url: CONSTANTS.API_URL + '/app/products/?ptid=${productType.id}',
+          url: CONSTANTS.API_URL +
+              '/app/products/?product_type_id=${productType.id}',
         ),
       );
-    }
-    return _product_list;
-  }
 
-  Future<List<ProductCategory>> getCategories({String location = "all"}) async {
-    _product_category_list = await WebService().get(
+  Future<bool> addProduct({@required Product product}) async {
+    Map<String, dynamic> result = await WebService().post(
       Resource(
         parse: (http.Response response) {
-          var _result = jsonDecode(response.body);
-          return (_result['categories'] as List)
-              .map((e) => ProductCategory.fromMap(e))
-              .toList();
+          return jsonDecode(response.body);
         },
-        url: CONSTANTS.API_URL + '/app/categories/?' + 'location=$location',
+        params: product.toMap(),
+        url: CONSTANTS.API_URL + '/app/product/index.php',
       ),
     );
-    return _product_category_list;
+    return result['success'];
   }
 
-  Future<bool> updateProductType({Product product}) {}
+  Future<bool> updateProduct({@required Product product}) async {
+    Map<String, dynamic> result = await WebService().patch(
+      Resource(
+        parse: (http.Response response) {
+          return jsonDecode(response.body);
+        },
+        params: product.toMap(),
+        url: CONSTANTS.API_URL + '/app/product/index.php',
+      ),
+    );
+    return result['success'];
+  }
 
-  addProduct({Product product}) {}
-
-  deleteProduct({Product product}) {}
+  Future<bool> deleteProduct({@required Product product}) async {
+    Map<String, dynamic> result = await WebService().delete(
+      Resource(
+        parse: (http.Response response) {
+          return jsonDecode(response.body);
+        },
+        url: CONSTANTS.API_URL +
+            '/app/product/index.php/?product_id=${product.id}',
+      ),
+    );
+    return result['success'];
+  }
 }

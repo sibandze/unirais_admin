@@ -1,6 +1,6 @@
-import 'package:UniRaisAdmin/pages/manage_products/pages/_pages.dart';
-import 'package:UniRaisAdmin/pages/manage_products/pages/each_category_page.dart';
-import 'package:UniRaisAdmin/util/_util.dart';
+import './../../pages/manage_products/pages/_pages.dart';
+import './../../pages/manage_products/pages/each_category_page.dart';
+import './../../util/_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,14 +20,14 @@ class __CategoryWidgetState extends State<_CategoryWidget> {
   TextEditingController _nameController;
   String _originalName;
 
-  BlocCategories _cartBloc;
+  BlocCategories _categoryBloc;
 
   ProductCategory get _category => widget.category;
   bool _editingName = false;
 
   @override
   void initState() {
-    _cartBloc = BlocCategories();
+    _categoryBloc = BlocProvider.of<BlocCategories>(context);
     _nameController = TextEditingController(text: _category.name);
     super.initState();
   }
@@ -35,20 +35,19 @@ class __CategoryWidgetState extends State<_CategoryWidget> {
   void updateCategory() async {
     _originalName = _category.name;
     _category.name = _nameController.text;
-    _cartBloc
-        .add(BlocEventCategoriesCreate(category: _category)); // TODO: make patch work
+    _categoryBloc.add(BlocEventCategoriesCreate(category: _category)); // TODO: make patch work
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<BlocCategories, BlocStateCategories>(
-      bloc: _cartBloc,
+      bloc: _categoryBloc,
       listener: (BuildContext context, BlocStateCategories state) {
         if (state is BlocStateCategoriesCUDSuccess) {
-
           setState(() {
             _editingName = false;
           });
+          _categoryBloc.add(BlocEventCategoriesFetch());
         } else if (state is BlocStateCategoriesCUDFailure) {
           _category.name = _originalName;
           _nameController.text = _originalName;
@@ -213,50 +212,78 @@ class _CategoryWidget extends StatefulWidget {
 
 class _ManageProductsPageState extends State<ManageProductsPage> {
   BlocCategories _categoriesBloc;
+  List<ProductCategory> _productCategories;
+  bool firstLoad = true;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_PAGE_TITLE),
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: BlocBuilder<BlocCategories, BlocStateCategories>(
-              bloc: _categoriesBloc,
-              builder: (BuildContext context, BlocStateCategories state) {
-                if (state is BlocStateCategoriesFetchingSuccess) {
-                  List<ProductCategory> _list = state.categories;
-                  return ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      ProductCategory category = _list[index];
-                      return _CategoryWidget(
-                        category: category,
-                      );
-                    },
-                    itemCount: _list.length,
-                  );
-                } else if (state is BlocStateCategoriesFetchingFailure) {
-                  return Center(
-                    child: Text("Error"),
-                  );
-                }
-                return Center(
-                  child: Text("Loading"),
-                );
-              },
+    return BlocListener<BlocCategories, BlocStateCategories>(
+      bloc: _categoriesBloc,
+      listener: (BuildContext context, BlocStateCategories state) async {
+        if (state is BlocStateCategoriesFetchingSuccess) {
+          setState(() {
+            if (state.categories.isNotEmpty) {
+              firstLoad = false;
+              _productCategories = state.categories;
+            }
+          });
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_PAGE_TITLE),
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: BlocBuilder<BlocCategories, BlocStateCategories>(
+                bloc: _categoriesBloc,
+                builder: (BuildContext context, BlocStateCategories state) {
+                  if (state is BlocStateCategoriesUninitialized) {
+                    return Center(
+                      child: Text("Loading"),
+                    );
+                  }
+                  else if (state is BlocStateCategoriesFetching && firstLoad) {
+                    return Center(
+                      child: Text("Loading"),
+                    );
+                  }
+                  else if (state is BlocStateCategoriesFetchingFailure &&
+                      firstLoad) {
+                    return Center(
+                      child: Text("Error"),
+                    );
+                  }
+                  else if (_productCategories != null) {
+                    return ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        ProductCategory category = _productCategories[index];
+                        return _CategoryWidget(
+                          category: category,
+                        );
+                      },
+                      itemCount: _productCategories.length,
+                    );
+                  }
+                  else {
+                    return Center(
+                      child: Text("Empty"),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.redAccent,
-        onPressed: () {
-          push(context, CategoryAddNewPage());
-        },
-        label: Text("Add  new category"),
-        icon: Icon(Icons.add_circle),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.redAccent,
+          onPressed: () {
+            push(context, CategoryAddNewPage());
+          },
+          label: Text("Add  new category"),
+          icon: Icon(Icons.add_circle),
+        ),
       ),
     );
   }
@@ -264,7 +291,7 @@ class _ManageProductsPageState extends State<ManageProductsPage> {
   @override
   void initState() {
     _categoriesBloc = BlocProvider.of<BlocCategories>(context);
-    _categoriesBloc.add(BlocEventCategoriesFetch(location: 'all'));
+    _categoriesBloc.add(BlocEventCategoriesFetch());
     super.initState();
   }
 }

@@ -18,7 +18,7 @@ class OrderItem extends Equatable {
     return {
       ROW_NAME: product.name,
       REF_PRODUCT_ID: product.id.toString(),
-      ROW_IMG_URL: product.img_url,
+      ROW_IMG_URL: product.imgUrl,
       ROW_PACKAGING: product.packaging,
       ROW_PRICE: product.price.amount.toString(),
       ROW_QUANTITY: quantity.toString(),

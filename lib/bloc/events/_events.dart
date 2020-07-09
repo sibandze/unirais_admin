@@ -4,7 +4,7 @@ export './cart_events.dart';
 export './category_events.dart';
 export './login_events.dart';
 export './order_event.dart';
-export './order_event.dart';
 export './product_events.dart';
 export './registration_events.dart';
 export './university_events.dart';
+export './product_type_events.dart';

@@ -15,8 +15,7 @@ abstract class BlocEventCategories extends Equatable {
 class BlocEventCategoriesFetch extends BlocEventCategories {
   final String location; // categories relevant to location in question
 
-  BlocEventCategoriesFetch({@required this.location}) : super(props: [location]);
-
+  BlocEventCategoriesFetch({this.location}) : super(props: [location]);
 }
 
 abstract class BlocEventCategoriesCUD extends BlocEventCategories{

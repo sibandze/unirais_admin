@@ -19,7 +19,7 @@ class BlocProducts extends Bloc<BlocEventProducts, BlocStateProducts> {
     if (event is BlocEventProductsUpdate) {
       yield BlocStateProductsCUDProcessing();
       try {
-        bool success = await _productRepository.updateProductType(
+        bool success = await _productRepository.updateProduct(
             product: event.product);  // TODO: add update product type method
         yield (success) ? BlocStateProductsCUDSuccess() : BlocStateProductsCUDFailure();
       } catch (e) {

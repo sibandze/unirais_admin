@@ -30,7 +30,7 @@ class CartItem extends Equatable {
     return {
       ROW_NAME: product.name,
       ROW_ID: product.id,
-      ROW_IMG_URL: product.img_url,
+      ROW_IMG_URL: product.imgUrl,
       ROW_PACKAGING: product.packaging,
       ROW_PRICE: product.price.amount,
       ROW_QUANTITY: quantity,
