@@ -28,7 +28,7 @@ class BlocProducts extends Bloc<BlocEventProducts, BlocStateProducts> {
       }
     }
     else{
-      if (event is BlocEventCategoriesCUD) {
+      if (event is BlocEventProductsCUD) {
         yield BlocStateProductsCUDProcessing();
         try {
           bool success = false;

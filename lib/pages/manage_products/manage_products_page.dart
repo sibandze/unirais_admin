@@ -1,12 +1,12 @@
-import './../../pages/manage_products/pages/_pages.dart';
-import './../../pages/manage_products/pages/each_category_page.dart';
-import './../../util/_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './../../bloc/_bloc.dart';
 import './../../model/_model.dart';
+import './../../pages/manage_products/pages/_pages.dart';
+import './../../pages/manage_products/pages/each_category_page.dart';
 import './../../presentation/_presentation.dart' as PRESENTATION;
+import './../../util/_util.dart';
 
 const _PAGE_TITLE = "Manage Products";
 
@@ -259,8 +259,14 @@ class _ManageProductsPageState extends State<ManageProductsPage> {
                     return ListView.builder(
                       itemBuilder: (BuildContext context, int index) {
                         ProductCategory category = _productCategories[index];
-                        return _CategoryWidget(
-                          category: category,
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              bottom: (index == _productCategories.length - 1)
+                                  ? 72
+                                  : 0),
+                          child: _CategoryWidget(
+                            category: category,
+                          ),
                         );
                       },
                       itemCount: _productCategories.length,

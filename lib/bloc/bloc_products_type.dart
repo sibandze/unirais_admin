@@ -31,13 +31,15 @@ class BlocProductTypes
         yield BlocStateProductTypesCUDFailure();
       }
     } else {
-      if (event is BlocEventCategoriesCUD) {
+      if (event is BlocEventProductTypesCUD) {
         yield BlocStateProductTypesCUDProcessing();
         try {
           bool success = false;
           if (event is BlocEventProductTypesCreate) {
+            print('Before BlocEventProductTypesCreate');
             success = await _productRepository.addProductType(
                 productType: event.productType);
+            print('AFTER BlocEventProductTypesCreate');
           } else if (event is BlocEventProductTypesDelete) {
             success = await _productRepository.deleteProductType(
                 productType: event.productType);

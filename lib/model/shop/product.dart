@@ -4,21 +4,22 @@ import 'package:meta/meta.dart';
 import './../../const/_const.dart' as CONSTANTS;
 import './../../util/_util.dart';
 
+// ignore: must_be_immutable
 class Product extends Equatable {
-  final String name;
+  String name;
   final int id;
   final int productTypeId;
   final String imgUrl;
-  final String packaging;
-  final Money price;
+  String packaging;
+  Money price;
 
   Product({
     @required this.productTypeId,
     @required this.name,
-    @required this.id,
-    this.imgUrl,
+    this.id = -1,
+    this.imgUrl = "",
     @required this.packaging,
-    @required num price,
+    num price = 0,
   }) : this.price = Money(price);
 
   factory Product.fromMap(map) => Product(

@@ -16,9 +16,9 @@ class ProductType extends Equatable {
 
   ProductType({
     @required this.name,
-    this.id,
+    this.id = -1,
     @required this.categoryId,
-    this.imgUrl,
+    this.imgUrl = "",
     num minPrice = 0,
     this.productList = const [],
   }) : minPrice = Money(minPrice);

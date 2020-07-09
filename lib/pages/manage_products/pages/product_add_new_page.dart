@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -9,37 +10,41 @@ import './../../../bloc/_bloc.dart';
 import './../../../model/_model.dart';
 import './../../../presentation/_presentation.dart' as PRESENTATION;
 
-class ProductTypeAddNewPage extends StatefulWidget {
-  final ProductCategory category;
+class ProductAddNewPage extends StatefulWidget {
+  final ProductType productType;
 
-  const ProductTypeAddNewPage({Key key, @required this.category})
+  const ProductAddNewPage({Key key, @required this.productType})
       : super(key: key);
 
   @override
-  _ProductTypeAddNewPageState createState() => _ProductTypeAddNewPageState();
+  _ProductAddNewPageState createState() => _ProductAddNewPageState();
 }
 
-class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
-  ProductCategory get _category => widget.category;
-  TextEditingController _productTypeNameController;
-  BlocProductTypes _blocProductTypes;
+class _ProductAddNewPageState extends State<ProductAddNewPage> {
+  ProductType get _productType => widget.productType;
+  TextEditingController _productNameController;
+  TextEditingController _priceController;
+  TextEditingController _packagingController;
+  BlocProducts _blocProducts;
   ImagePicker _picker;
   PickedFile _image;
-  Widget _productTypeImage;
+  Widget _productImage;
 
   @override
   void initState() {
-    _productTypeNameController = TextEditingController();
+    _productNameController = TextEditingController();
+    _priceController = TextEditingController();
+    _packagingController = TextEditingController();
     _picker = ImagePicker();
-    _productTypeImage = Container(); // TODO: add placeholder
-    _blocProductTypes = BlocProvider.of<BlocProductTypes>(context);
+    _productImage = Container(); // TODO: add placeholder
+    _blocProducts = BlocProvider.of<BlocProducts>(context);
     super.initState();
   }
 
-  void _addProductTypeImage() {
+  void _addProductImage() {
     final action = CupertinoActionSheet(
       message: Text(
-        "Add product type cover image",
+        "Add product image",
         style: TextStyle(fontSize: 15.0),
       ),
       actions: <Widget>[
@@ -51,7 +56,7 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
             _image = await _picker.getImage(source: ImageSource.gallery);
             if (_image != null)
               setState(() {
-                _productTypeImage = Image.file(
+                _productImage = Image.file(
                   File(_image.path),
                   fit: BoxFit.fitWidth,
                 );
@@ -66,7 +71,7 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
             _image = await ImagePicker().getImage(source: ImageSource.camera);
             if (_image != null)
               setState(() {
-                _productTypeImage = Image.file(
+                _productImage = Image.file(
                   File(_image.path),
                   fit: BoxFit.fitWidth,
                 );
@@ -85,12 +90,13 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
   }
 
   Future submitChanges() async {
-    if (_productTypeNameController.text.trim().isNotEmpty) {
-      ProductType _productType = ProductType(
-          name: _productTypeNameController.text.trim(),
-          categoryId: _category.id);
-      _blocProductTypes
-          .add(BlocEventProductTypesCreate(productType: _productType));
+    if (_productNameController.text.trim().isNotEmpty) {
+      Product _product = Product(
+          productTypeId: _productType.id,
+          name: _productNameController.text.trim(),
+          packaging: _packagingController.text.trim(),
+          price: num.parse(_priceController.text.trim()));
+      _blocProducts.add(BlocEventProductsCreate(product: _product));
     }
   }
 
@@ -98,17 +104,17 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add new product type'),
+        title: Text('Add new product'),
       ),
-      body: BlocListener<BlocProductTypes, BlocStateProductTypes>(
-        bloc: _blocProductTypes,
-        listener: (BuildContext context, BlocStateProductTypes state) {
-          if (state is BlocStateProductTypesCUDSuccess) {
+      body: BlocListener<BlocProducts, BlocStateProducts>(
+        bloc: _blocProducts,
+        listener: (BuildContext context, BlocStateProducts state) {
+          if (state is BlocStateProductsCUDSuccess) {
             print('success');
-            _blocProductTypes.add(
-                BlocEventProductTypesFetch(category: _category));
+            _blocProducts
+                .add(BlocEventProductsFetch(productType: _productType));
             Navigator.of(context).pop();
-          } else if (state is BlocStateProductTypesCUDFailure) {
+          } else if (state is BlocStateProductsCUDFailure) {
             print('failure');
           }
         },
@@ -126,7 +132,7 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                          _addProductTypeImage();
+                          _addProductImage();
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
@@ -134,7 +140,7 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
                             height: 200,
                             width: 200,
                             color: Colors.deepPurpleAccent,
-                            child: _productTypeImage,
+                            child: _productImage,
                           ),
                         ),
                       )
@@ -146,7 +152,7 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: TextFormField(
-                      controller: _productTypeNameController,
+                      controller: _productNameController,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         contentPadding: new EdgeInsets.symmetric(
@@ -154,7 +160,65 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
                           horizontal: 16,
                         ),
                         fillColor: Colors.white,
-                        hintText: 'Product type Name',
+                        hintText: 'Product Name',
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: PRESENTATION.PRIMARY_COLOR,
+                            width: 2.0,
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: TextFormField(
+                      controller: _packagingController,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
+                        fillColor: Colors.white,
+                        hintText: 'Packaging',
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: PRESENTATION.PRIMARY_COLOR,
+                            width: 2.0,
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: TextFormField(
+                      controller: _priceController,
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      textInputAction: TextInputAction.send,
+                      decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
+                        fillColor: Colors.white,
+                        hintText: 'Price',
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0),
                           borderSide: BorderSide(
@@ -189,7 +253,7 @@ class _ProductTypeAddNewPageState extends State<ProductTypeAddNewPage> {
                   await submitChanges();
                 },
                 child: Text(
-                  'Add product type',
+                  'Add product',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

@@ -86,13 +86,17 @@ class ProductRepository {
       );
 
   Future<bool> addProductType({@required ProductType productType}) async {
+    print('addProductType');
+    print(productType.toMap().toString());
+
     Map<String, dynamic> result = await WebService().post(
       Resource(
         parse: (http.Response response) {
+          print(response.body);
           return jsonDecode(response.body);
         },
         params: productType.toMap(),
-        url: CONSTANTS.API_URL + '/app/product_types/index.php',
+        url: CONSTANTS.API_URL + '/app/product_type/index.php',
       ),
     );
     return result['success'];
@@ -105,7 +109,7 @@ class ProductRepository {
           return jsonDecode(response.body);
         },
         params: productType.toMap(),
-        url: CONSTANTS.API_URL + '/app/product_types/index.php',
+        url: CONSTANTS.API_URL + '/app/product_type/index.php',
       ),
     );
     return result['success'];
@@ -118,7 +122,7 @@ class ProductRepository {
           return jsonDecode(response.body);
         },
         url: CONSTANTS.API_URL +
-            '/app/product_types/index.php/?product_type_id=${productType.id}',
+            '/app/product_type/index.php/?product_type_id=${productType.id}',
       ),
     );
     return result['success'];
@@ -148,7 +152,7 @@ class ProductRepository {
           return jsonDecode(response.body);
         },
         params: product.toMap(),
-        url: CONSTANTS.API_URL + '/app/product/index.php',
+        url: CONSTANTS.API_URL + '/app/products/index.php',
       ),
     );
     return result['success'];
@@ -161,7 +165,7 @@ class ProductRepository {
           return jsonDecode(response.body);
         },
         params: product.toMap(),
-        url: CONSTANTS.API_URL + '/app/product/index.php',
+        url: CONSTANTS.API_URL + '/app/products/index.php',
       ),
     );
     return result['success'];
@@ -174,7 +178,7 @@ class ProductRepository {
           return jsonDecode(response.body);
         },
         url: CONSTANTS.API_URL +
-            '/app/product/index.php/?product_id=${product.id}',
+            '/app/products/index.php/?product_id=${product.id}',
       ),
     );
     return result['success'];
