@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import './../../../bloc/_bloc.dart';
 import './../../../bloc/categories_bloc.dart';
 import './../../../model/_model.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import './../../../presentation/_presentation.dart' as PRESENTATION;
-import 'package:flutter/material.dart';
 
 class CategoryAddNewPage extends StatefulWidget {
 
@@ -16,22 +16,6 @@ class CategoryAddNewPage extends StatefulWidget {
 class _CategoryAddNewPageState extends State<CategoryAddNewPage> {
   TextEditingController _productNameController = TextEditingController();
   BlocCategories _categoriesBloc;
-
-  @override
-  void initState() {
-    _categoriesBloc = BlocProvider.of<BlocCategories>(context);
-    super.initState();
-  }
-
-  Future submitChanges() async {
-    if (
-      _productNameController.text.trim().isNotEmpty
-    ) {
-      ProductCategory _category =
-          ProductCategory(name: _productNameController.text.trim());
-      _categoriesBloc.add(BlocEventCategoriesCreate(category: _category));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,5 +107,21 @@ class _CategoryAddNewPageState extends State<CategoryAddNewPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    _categoriesBloc = BlocProvider.of<BlocCategories>(context);
+    super.initState();
+  }
+
+  Future submitChanges() async {
+    if (
+      _productNameController.text.trim().isNotEmpty
+    ) {
+      ProductCategory _category =
+          ProductCategory(name: _productNameController.text.trim());
+      _categoriesBloc.add(BlocEventCategoriesCreate(category: _category));
+    }
   }
 }
